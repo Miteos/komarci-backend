@@ -1,5 +1,13 @@
-import { Controller, Request, Post, UseGuards } from '@nestjs/common';
-import { LocalAuthGuard } from './auth/local-auth.guard';
+import { Controller, Get } from '@nestjs/common';
+
+import { AppService } from './app.service';
 
 @Controller()
-export class AppController {}
+export class AppController {
+  constructor(private readonly appService: AppService) {}
+
+  @Get()
+  async GetHello() {
+    return this.appService.getHello();
+  }
+}
