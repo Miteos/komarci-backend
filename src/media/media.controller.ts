@@ -34,7 +34,7 @@ export class MediaController {
 
   @Get(':imagename')
   getImage(@Param('imagename') image, @Res() res) {
-    const response = res.sendFile(image, { root: './images' });
+    const response = res.sendFile(image, { root: './uploads' });
     return {
       status: HttpStatus.OK,
       data: response,

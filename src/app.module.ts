@@ -7,7 +7,8 @@ import { DataModule } from './data/data.module';
 import { MediaModule } from './media/media.module';
 import { AuthModule } from './auth/auth.module';
 import { UserModule } from './user/user.module';
-import { UserEntity } from './user/user.entity';
+import { User } from './user/user.entity';
+import { Data } from './data/data.entity';
 
 @Module({
   imports: [
@@ -18,7 +19,7 @@ import { UserEntity } from './user/user.entity';
       username: 'root',
       password: 'Matakraljina1993',
       database: 'komarcidb',
-      entities: [UserEntity],
+      entities: [User, Data],
       synchronize: true,
     }),
     DataModule,

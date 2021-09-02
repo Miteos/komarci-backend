@@ -1,16 +1,15 @@
 import {
-  Entity,
-  PrimaryGeneratedColumn,
+  BaseEntity,
   Column,
-  BeforeInsert,
-  JoinTable,
-  ManyToMany,
-  OneToMany,
+  Entity,
+  JoinColumn,
+  OneToOne,
+  PrimaryGeneratedColumn,
 } from 'typeorm';
-import { DataEntity } from '../data/data.entity';
+import { Data } from '../data/data.entity';
 
 @Entity('user')
-export class UserEntity {
+export class User {
   @PrimaryGeneratedColumn()
   id: number;
 
@@ -20,6 +19,7 @@ export class UserEntity {
   @Column()
   password: string;
 
-  @OneToMany((type) => UserEntity, (user) => user.data)
-  data: [];
+  @OneToOne((type: any) => Data, { cascade: true, eager: true })
+  @JoinColumn()
+  data: Data;
 }
