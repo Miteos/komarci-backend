@@ -1,95 +1,50 @@
-import { Injectable, NotFoundException } from '@nestjs/common';
-import { Data } from './data.model';
-import { v4 as uuidv4 } from 'uuid';
+import { Injectable } from '@nestjs/common';
+import { InjectRepository } from '@nestjs/typeorm';
+import { Data } from './data.entity';
+import { Repository } from 'typeorm';
+import { CreateDataDto } from './dto/create-data.dto';
+import { User } from '../user/user.entity';
+import { dataRO } from './data.interface';
 
 @Injectable()
 export class DataService {
-  data: Data[] = [];
+  constructor(
+    @InjectRepository(Data)
+    private readonly dataRepository: Repository<Data>,
+    @InjectRepository(User)
+    private readonly userRepository: Repository<User>,
+  ) {}
 
-  insertData(
-    eggCount_1: number,
-    eggCount_2: number,
-    eggCount_3: number,
-    eggCount_4: number,
-    initials: string,
-    initial_date: string,
-    location: string,
-    media: string,
-  ) {
-    const dataId = uuidv4();
-    const newData = new Data(
-      dataId,
-      eggCount_1,
-      eggCount_2,
-      eggCount_3,
-      eggCount_4,
-      initials,
-      initial_date,
-      location,
-      media,
-    );
-    this.data.push(newData);
-    return dataId;
+  async all(): Promise<Data[]> {
+    return await this.dataRepository.find();
   }
-  getData() {
-    return [...this.data];
+  async findByID(id: string) {
+    return await this.dataRepository.findOne(id);
   }
-  getSingleData(dataId: string) {
-    const singleData = this.findData(dataId);
-    return { ...singleData };
+  async create(userId: number, newData: CreateDataDto): Promise<Data> {
+    const dataId = userId;
+    const data = new Data();
+    data.eggCount_1 = newData.eggCount_1;
+    data.eggCount_2 = newData.eggCount_2;
+    data.eggCount_3 = newData.eggCount_3;
+    data.eggCount_4 = newData.eggCount_4;
+    data.initials = newData.initials;
+    data.initial_date = newData.initial_date;
+    data.location = newData.location;
+    data.media = newData.media;
+
+    const createdData = await this.dataRepository.save(data);
+    const user = await this.userRepository.findOne(dataId);
+    user.data = data;
+    await this.userRepository.save(user);
+
+    return createdData;
   }
 
-  private findData(id: string): [Data, number] {
-    const dataIndex = this.data.findIndex((dataId) => dataId.id === id);
-    const data = this.data[dataIndex];
-    if (!data) {
-      throw new NotFoundException('Podatci nisu pronađeni.');
-    }
-    return [data, dataIndex];
-  }
-
-  updateData(
-    id: string,
-    eggCount_1: number,
-    eggCount_2: number,
-    eggCount_3: number,
-    eggCount_4: number,
-    initials: string,
-    initial_date: string,
-    location: string,
-    media: string,
-  ) {
-    const [singleData, index] = this.findData(id);
-    const updatedData = { ...singleData };
-    if (eggCount_1) {
-      updatedData.eggCount_1 = eggCount_1;
-    }
-    if (eggCount_2) {
-      updatedData.eggCount_2 = eggCount_2;
-    }
-    if (eggCount_3) {
-      updatedData.eggCount_3 = eggCount_3;
-    }
-    if (eggCount_4) {
-      updatedData.eggCount_4 = eggCount_4;
-    }
-    if (initials) {
-      updatedData.initials = initials;
-    }
-    if (initial_date) {
-      updatedData.initial_date = initial_date;
-    }
-    if (location) {
-      updatedData.location = location;
-    }
-    if (media) {
-      updatedData.media = media;
-    }
-    this.data[index] = updatedData;
-  }
-
-  deleteJob(id: string) {
-    const index = this.findData(id)[1];
-    this.data.splice(index, 1);
+  async update(id: string, updatedData: any): Promise<dataRO> {
+    const toUpdate = await this.dataRepository.findOne(id);
+    const updated = Object.assign(toUpdate, updatedData);
+    const data = await this.dataRepository.save(updated);
+    return { data };
   }
 }

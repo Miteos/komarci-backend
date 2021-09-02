@@ -1,23 +1,10 @@
-import {
-  Entity,
-  PrimaryGeneratedColumn,
-  Column,
-  OneToOne,
-  ManyToOne,
-  OneToMany,
-  JoinColumn,
-  AfterUpdate,
-  BeforeUpdate,
-} from 'typeorm';
-import { UserEntity } from '../user/user.entity';
+import { Column, OneToOne, PrimaryGeneratedColumn, Entity } from 'typeorm';
+import { User } from '../user/user.entity';
 
 @Entity('data')
-export class DataEntity {
+export class Data {
   @PrimaryGeneratedColumn()
   id: number;
-
-  @Column()
-  slug: string;
 
   @Column()
   eggCount_1: number;
@@ -31,12 +18,18 @@ export class DataEntity {
   @Column()
   eggCount_4: number;
 
-  @Column({ type: 'timestamp', default: () => 'CURRENT_TIMESTAMP' })
-  created: Date;
+  @Column()
+  initials: string;
 
-  @Column({ type: 'timestamp', default: () => 'CURRENT_TIMESTAMP' })
-  updated: Date;
+  @Column()
+  initial_date: string;
 
-  @OneToOne(() => User, (user) => user.username) // specify inverse side as a second parameter
+  @Column()
+  location: string;
+
+  @Column()
+  media: string;
+
+  @OneToOne(() => User)
   user: User;
 }
