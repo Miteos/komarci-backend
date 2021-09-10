@@ -7,16 +7,16 @@ export class Data {
   id: number;
 
   @Column()
-  eggCount_1: number;
+  eggCount_1: string;
 
   @Column()
-  eggCount_2: number;
+  eggCount_2: string;
 
   @Column()
-  eggCount_3: number;
+  eggCount_3: string;
 
   @Column()
-  eggCount_4: number;
+  eggCount_4: string;
 
   @Column()
   initials: string;
@@ -25,7 +25,10 @@ export class Data {
   initial_date: string;
 
   @Column()
-  location: string;
+  longitude: string;
+
+  @Column()
+  latitude: string;
 
   @Column()
   media: string;

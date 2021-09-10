@@ -30,7 +30,8 @@ export class DataService {
     data.eggCount_4 = newData.eggCount_4;
     data.initials = newData.initials;
     data.initial_date = newData.initial_date;
-    data.location = newData.location;
+    data.longitude = newData.longitude;
+    data.latitude = newData.latitude;
     data.media = newData.media;
 
     const createdData = await this.dataRepository.save(data);

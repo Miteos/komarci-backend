@@ -20,7 +20,7 @@ export class UserService {
     return await this.userRepository.findOne({ where: { username } });
   }
   async findByID(id: number): Promise<User> {
-    return await this.userRepository.findOne(id);
+    return await this.userRepository.findOne({ id: id });
   }
   async createUser(addUser: CreateUserDto): Promise<User> {
     const newUser = await this.userRepository.save(addUser);
@@ -56,7 +56,10 @@ export class UserService {
       return result;
     }
     if (!user) {
-      throw new UnauthorizedException();
+      throw new UnauthorizedException('User not forund');
+    }
+    if (user && user.password !== password) {
+      throw new UnauthorizedException('Password incorrect');
     }
     return null;
   }
